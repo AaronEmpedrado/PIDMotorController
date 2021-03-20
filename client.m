@@ -19,6 +19,7 @@ if ~isempty(instrfind)
     delete(instrfind);
 end
 
+% My port : '/dev/tty.usbserial-DM01N1JX'
 fprintf('Opening port %s....\n',port);
 
 % settings for opening the serial port. baud rate 230400, hardware flow control

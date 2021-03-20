@@ -1,5 +1,8 @@
 #include "NU32.h"          // config bits, constants, funcs for startup and UART
+#include <stdio.h>
+
 // include other header files here
+#include "encoder.h"
 
 #define BUF_SIZE 200
 
@@ -11,6 +14,7 @@ int main()
     NU32_LED2 = 1;        
     __builtin_disable_interrupts();
     // in future, initialize modules or peripherals here
+    encoder_init();
     __builtin_enable_interrupts();
 
     while(1)
@@ -18,13 +22,24 @@ int main()
         NU32_ReadUART3(buffer,BUF_SIZE); // we expect the next character to be a menu command
         NU32_LED2 = 1;                   // clear the error LED
         switch (buffer[0]) {
-            case 'd':                      // dummy command for demonstration purposes
+            /* Send Encoder count to client*/
+            case 'c':
             {
-                int n = 0;
-                NU32_ReadUART3(buffer,BUF_SIZE);
-                sscanf(buffer, "%d", &n);
-                sprintf(buffer,"%d\r\n", n + 1); // return the number + 1
+                sprintf(buffer, "%d\r\n", encoder_counts());
+                NU32_WriteUART3(buffer);    
+                break;
+            }
+            /* Send encoder angle to client */
+            case 'd':       
+            {
+                sprintf(buffer,"%d\r\n", encoder_angle()); 
                 NU32_WriteUART3(buffer);
+                break;
+            }
+            /* Reset the encoder count */
+            case 'e':
+            {
+                encoder_reset();
                 break;
             }
             case 'q':
