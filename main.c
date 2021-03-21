@@ -59,6 +59,12 @@ int main()
                 NU32_WriteUART3(buffer);
                 break;
             }
+            /*Testing stuff command*/
+            case 'z':
+            {
+                set_mode(PWM);
+                break;
+            }
             default:
             {
                 NU32_LED2 = 0;  // turn on LED2 to indicate an error

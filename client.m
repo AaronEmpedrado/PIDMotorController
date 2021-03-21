@@ -31,6 +31,10 @@ fopen(mySerial);
 clean = onCleanup(@()fclose(mySerial));                                 
 
 has_quit = false;
+
+
+% Dictionary mapping to help with displaying modes => encoded as enum in underlying C client
+MODES = containers.Map({0,1,2,3,4}, {'IDLE','PWM','ITEST','HOLD','TRACK'});
 % menu loop
 while ~has_quit
     fprintf('PIC32 MOTOR DRIVER INTERFACE\n\n');
@@ -38,6 +42,7 @@ while ~has_quit
     fprintf('\ta: Read current sensor (ADC counts)\tb: Read current sensor(mA)\n');
     fprintf('\tc: Read encoder(counts)\t\t\td: Read encoder {deg : [-180,180]}\n ');
     fprintf('\te: Reset encoder\t\t\tf: Set PWM(-100 to 100)\n');
+    fprintf('\tr: Get mode\n')
     fprintf('\tq: Quit\n');
 
     % read the user's choice
@@ -56,6 +61,9 @@ while ~has_quit
             fprintf('Read: %d\n', angle);           % print it to the screen
         case 'e'
             fprintf('Encoder angle has been reset.\n');
+        case 'r'
+            mode = fscanf(mySerial,'%d');           % get the current mode that the PIC is in
+            fprintf('PIC32 currently set to : %s\n', MODES(mode));
         case 'q'
             has_quit = true;             % exit client
         otherwise
