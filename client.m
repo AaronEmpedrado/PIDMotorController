@@ -35,7 +35,11 @@ has_quit = false;
 while ~has_quit
     fprintf('PIC32 MOTOR DRIVER INTERFACE\n\n');
     % display the menu options; this list will grow
-    fprintf('     d: Dummy Command    q: Quit\n');
+    fprintf('\ta: Read current sensor (ADC counts)\tb: Read current sensor(mA)\n');
+    fprintf('\tc: Read encoder(counts)\t\t\td: Read encoder {deg : [-180,180]}\n ');
+    fprintf('\te: Reset encoder\t\t\tf: Set PWM(-100 to 100)\n');
+    fprintf('\tq: Quit\n');
+
     % read the user's choice
     selection = input('\nENTER COMMAND: ', 's');
       
@@ -44,11 +48,14 @@ while ~has_quit
     
     % take the appropriate action
     switch selection
-        case 'd'                         % example operation
-            n = input('Enter number: '); % get the number to send
-            fprintf(mySerial, '%d\n',n); % send the number
-            n = fscanf(mySerial,'%d');   % get the incremented number back
-            fprintf('Read: %d\n',n);     % print it to the screen
+        case 'c'
+            counts = fscanf(mySerial,'%d');         % Get the encoder count
+            fprintf('Read: %d\n', counts);          % print it to the screen            
+        case 'd'                         
+            angle = fscanf(mySerial,'%d');          % get the motor angle (deg)
+            fprintf('Read: %d\n', angle);           % print it to the screen
+        case 'e'
+            fprintf('Encoder angle has been reset.\n');
         case 'q'
             has_quit = true;             % exit client
         otherwise
