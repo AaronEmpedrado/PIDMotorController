@@ -3,6 +3,7 @@
 
 // include other header files here
 #include "encoder.h"
+#include "utilities.h"
 
 #define BUF_SIZE 200
 
@@ -16,6 +17,9 @@ int main()
     // in future, initialize modules or peripherals here
     encoder_init();
     __builtin_enable_interrupts();
+
+    /*Set the initial mode to IDLE*/
+    set_mode(IDLE);
 
     while(1)
     {
@@ -45,6 +49,14 @@ int main()
             case 'q':
             {
                 // handle q for quit. Later you may want to return to IDLE mode here. 
+                set_mode(IDLE);
+                break;
+            }
+            /* Return the current mode as an enum */
+            case 'r':
+            {
+                sprintf(buffer,"%d\r\n", get_mode()); 
+                NU32_WriteUART3(buffer);
                 break;
             }
             default:
